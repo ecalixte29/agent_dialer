@@ -51,9 +51,9 @@ services:
     buildCommand: >
       npm install --legacy-peer-deps &&
       cp -r apps/web/* . &&
+      echo '{"compilerOptions":{"target":"ES2020","lib":["DOM","DOM.Iterable","ES6"],"allowJs":false,"skipLibCheck":true,"esModuleInterop":false,"allowSyntheticDefaultImports":true,"strict":true,"forceConsistentCasingInFileNames":true,"moduleResolution":"node","resolveJsonModule":true,"isolatedModules":true,"noEmit":true,"jsx":"react-jsx"},"include":["src"],"exclude":["node_modules"]}' > tsconfig.json &&
       npm install --legacy-peer-deps &&
-      chmod +x node_modules/.bin/* &&
-      ./node_modules/.bin/vite build
+      npm run build
     startCommand: "npm install -g serve && serve -s dist -p $PORT"
     envVars:
       - key: VITE_API_URL
