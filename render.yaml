@@ -51,8 +51,10 @@ services:
     buildCommand: |
       ls -la
       npm install
-      npm run build --workspace=apps/web
-      ls -la apps/web/
+      cd apps/web
+      npm install
+      npx vite build
+      cd ../..
       ls -la apps/web/dist/
     startCommand: "npm install -g serve && find . -name dist -type d && serve -s apps/web/dist -p $PORT"
     envVars:
