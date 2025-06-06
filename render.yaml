@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # This file tells Render how to build and deploy your application.
 # For more details, see the Render documentation: https://render.com/docs/yaml-spec
 
@@ -61,67 +60,4 @@ services:
           name: api
           property: hostport
 
-=======
-# This file tells Render how to build and deploy your application.
-# For more details, see the Render documentation: https://render.com/docs/yaml-spec
-
-databases:
-  # 1. PostgreSQL Database
-  - name: dialer-db
-    databaseName: dialer_db
-    plan: free # Note: free plans may spin down due to inactivity.
-
-services:
-  # 2. Redis Cache
-  - type: redis
-    name: dialer-redis
-    plan: free
-    ipAllowList: [] # Allows access from other services in your Render account
-
-  # 3. Backend API (NestJS)
-  - type: web
-    name: api
-    plan: free
-    runtime: docker
-    dockerfilePath: ./Dockerfile.api
-    healthCheckPath: /
-    envVars:
-      - key: DATABASE_URL
-        fromDatabase:
-          name: dialer-db
-          property: connectionString
-      - key: REDIS_URL
-        fromService:
-          type: redis
-          name: dialer-redis
-          property: connectionString
-      # --- Secrets (set in Render UI) ---
-      - key: JWT_SECRET
-        generateValue: true
-      - key: TWILIO_ACCOUNT_SID
-        sync: false
-      - key: TWILIO_AUTH_TOKEN
-        sync: false
-      - key: TWILIO_PHONE_NUMBER
-        sync: false
-      - key: OPENAI_API_KEY
-        sync: false
-
-  # 4. Frontend Web App (React + Vite)
-  - type: web
-    name: web
-    plan: free
-    runtime: node
-    buildCommand: |
-      npm install
-      npm run build --workspace=apps/web
-    startCommand: "npm install -g serve && serve -s ./apps/web/dist"
-    envVars:
-      - key: VITE_API_URL
-        fromService:
-          type: web
-          name: api
-          property: hostport
-
->>>>>>> 14e599133f152e2be76a017d03c17ce543aa45cb
  
