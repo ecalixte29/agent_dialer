@@ -49,18 +49,11 @@ services:
     plan: free
     runtime: node
     buildCommand: >
-      echo "Project structure:" &&
-      ls -la &&
-      echo "Installing root dependencies:" &&
       npm install --legacy-peer-deps &&
-      echo "Copying web app:" &&
       cp -r apps/web/* . &&
-      echo "Installing web dependencies:" &&
       npm install --legacy-peer-deps &&
-      echo "Building with vite:" &&
-      npx vite build &&
-      echo "Build complete:" &&
-      ls -la dist/
+      chmod +x node_modules/.bin/* &&
+      ./node_modules/.bin/vite build
     startCommand: "npm install -g serve && serve -s dist -p $PORT"
     envVars:
       - key: VITE_API_URL
