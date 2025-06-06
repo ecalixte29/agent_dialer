@@ -1,25 +1,20 @@
 # This file tells Render how to build and deploy your application.
 # For more details, see the Render documentation: https://render.com/docs/yaml-spec
 
-services:
+databases:
   # 1. PostgreSQL Database
-  # A managed PostgreSQL database for your application.
-  - type: db
-    name: dialer-db
+  - name: dialer-db
     databaseName: dialer_db
-    plan: free
-    postgres:
-      version: 14
+    plan: free # Note: free plans may spin down due to inactivity.
 
+services:
   # 2. Redis Cache
-  # A managed Redis instance for caching and queues.
   - type: redis
     name: dialer-redis
     plan: free
     ipAllowList: [] # Allows access from other services in your Render account
 
   # 3. Backend API (NestJS)
-  # This service builds and runs the backend API from its Dockerfile.
   - type: web
     name: api
     plan: free
@@ -49,7 +44,6 @@ services:
         sync: false
 
   # 4. Frontend Web App (React + Vite)
-  # A web service that builds the React frontend and serves it via a static server.
   - type: static
     name: web
     plan: free
