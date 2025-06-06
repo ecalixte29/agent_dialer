@@ -57,6 +57,6 @@ services:
         fromService:
           type: web
           name: api
-          property: url
+          property: hostport
 
  
