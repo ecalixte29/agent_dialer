@@ -44,6 +44,22 @@ services:
         sync: false
 
   # 4. Frontend Web App (React + Vite)
+  - type: web
+    name: web
+    plan: free
+    runtime: node
+    buildCommand: |
+      npm install
+      npm run build --workspace=apps/web
+    startCommand: "npm install -g serve && serve -s ./apps/web/dist"
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: api
+          property: url
+
+  # 5. Frontend Web App (React + Vite)
   - type: static
     name: web
     plan: free
