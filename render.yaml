@@ -59,21 +59,4 @@ services:
           name: api
           property: url
 
-  # 5. Frontend Web App (React + Vite)
-  - type: static
-    name: web
-    plan: free
-    buildCommand: |
-      npm install
-      npm run build --workspace=apps/web
-    publishDir: ./apps/web/dist
-    routes:
-      # Proxy /api requests to the backend service.
-      # The .onrender.com URL is created automatically.
-      - type: rewrite
-        source: /api/:path*
-        destination: https://api.onrender.com/:path*
-      # Rewrite all other requests to index.html for React Router.
-      - type: rewrite
-        source: /*
-        destination: /index.html 
+ 
