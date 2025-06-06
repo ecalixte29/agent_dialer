@@ -48,18 +48,18 @@ services:
     name: web
     plan: free
     runtime: node
-    buildCommand: |
-      echo "=== Project structure ==="
-      ls -la
-      echo "=== Installing root dependencies ==="
-      npm install --legacy-peer-deps
-      echo "=== Copying web app to build directory ==="
-      cp -r apps/web/* .
-      echo "=== Installing web dependencies ==="
-      npm install --legacy-peer-deps
-      echo "=== Building with vite ==="
-      npx vite build
-      echo "=== Build complete, checking output ==="
+    buildCommand: >
+      echo "Project structure:" &&
+      ls -la &&
+      echo "Installing root dependencies:" &&
+      npm install --legacy-peer-deps &&
+      echo "Copying web app:" &&
+      cp -r apps/web/* . &&
+      echo "Installing web dependencies:" &&
+      npm install --legacy-peer-deps &&
+      echo "Building with vite:" &&
+      npx vite build &&
+      echo "Build complete:" &&
       ls -la dist/
     startCommand: "npm install -g serve && serve -s dist -p $PORT"
     envVars:
