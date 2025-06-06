@@ -49,10 +49,12 @@ services:
     plan: free
     runtime: node
     buildCommand: |
+      ls -la
       npm install
-      cd apps/web && npm install
-      cd apps/web && npx vite build
-    startCommand: "npm install -g serve && serve -s apps/web/dist -p $PORT"
+      npm run build --workspace=apps/web
+      ls -la apps/web/
+      ls -la apps/web/dist/
+    startCommand: "npm install -g serve && find . -name dist -type d && serve -s apps/web/dist -p $PORT"
     envVars:
       - key: VITE_API_URL
         fromService:
