@@ -6,9 +6,9 @@ services:
   # A managed PostgreSQL database for your application.
   - type: pserv
     name: dialer-db
+    runtime: postgres
     plan: free # Note: free plans may spin down due to inactivity.
-    postgres:
-      version: 15
+    version: "15"
 
   # 2. Redis Cache
   # A managed Redis instance for caching and queues.
