@@ -51,9 +51,10 @@ services:
     buildCommand: >
       npm install --legacy-peer-deps &&
       cp -r apps/web/* . &&
-      echo '{"compilerOptions":{"target":"ES2020","lib":["DOM","DOM.Iterable","ES6"],"allowJs":false,"skipLibCheck":true,"esModuleInterop":false,"allowSyntheticDefaultImports":true,"strict":true,"forceConsistentCasingInFileNames":true,"moduleResolution":"node","resolveJsonModule":true,"isolatedModules":true,"noEmit":true,"jsx":"react-jsx"},"include":["src"],"exclude":["node_modules"]}' > tsconfig.json &&
-      npm install --legacy-peer-deps &&
-      npm run build
+      npm install esbuild --save-dev &&
+      mkdir -p dist/assets &&
+      sed 's|/src/main.tsx|/assets/main.js|g' index.html > dist/index.html &&
+      npx esbuild src/main.tsx --bundle --outfile=dist/assets/main.js --format=esm --target=es2020 --define:process.env.NODE_ENV=\"production\" --loader:.tsx=tsx --loader:.ts=tsx --minify
     startCommand: "npm install -g serve && serve -s dist -p $PORT"
     envVars:
       - key: VITE_API_URL
