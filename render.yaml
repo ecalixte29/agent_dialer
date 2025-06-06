@@ -4,12 +4,10 @@
 services:
   # 1. PostgreSQL Database
   # A managed PostgreSQL database for your application.
-  - type: db
+  - type: pserv
     name: dialer-db
-    databaseName: dialer # The name of the database to create
+    runtime: postgres # Specify the runtime for the private service
     plan: free # Note: free plans may spin down due to inactivity.
-    postgres:
-      version: 15
 
   # 2. Redis Cache
   # A managed Redis instance for caching and queues.
@@ -27,7 +25,8 @@ services:
     healthCheckPath: /
     envVars:
       - key: DATABASE_URL
-        fromDatabase:
+        fromService:
+          type: pserv
           name: dialer-db
           property: connectionString
       - key: REDIS_URL
