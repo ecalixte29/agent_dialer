@@ -49,14 +49,19 @@ services:
     plan: free
     runtime: node
     buildCommand: |
+      echo "=== Project structure ==="
       ls -la
-      npm install
-      cd apps/web
-      npm install
+      echo "=== Installing root dependencies ==="
+      npm install --legacy-peer-deps
+      echo "=== Copying web app to build directory ==="
+      cp -r apps/web/* .
+      echo "=== Installing web dependencies ==="
+      npm install --legacy-peer-deps
+      echo "=== Building with vite ==="
       npx vite build
-      cd ../..
-      ls -la apps/web/dist/
-    startCommand: "npm install -g serve && find . -name dist -type d && serve -s apps/web/dist -p $PORT"
+      echo "=== Build complete, checking output ==="
+      ls -la dist/
+    startCommand: "npm install -g serve && serve -s dist -p $PORT"
     envVars:
       - key: VITE_API_URL
         fromService:
