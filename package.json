@@ -1,0 +1,17 @@
+{
+  "name": "dialer-crm-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "version": "0.1.0",
+  "scripts": {
+    "dev:api": "npm --workspace apps/api run start:dev",
+    "dev:web": "npm --workspace apps/web run dev",
+    "dev": "concurrently -k \"npm run dev:api\" \"npm run dev:web\"",
+    "build": "npm --workspace apps/api run build && npm --workspace apps/web run build"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+} 

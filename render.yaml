@@ -1,0 +1,69 @@
+# This file tells Render how to build and deploy your application.
+# For more details, see the Render documentation: https://render.com/docs/yaml-spec
+
+services:
+  # 1. PostgreSQL Database
+  # A managed PostgreSQL database for your application.
+  - type: pserv
+    name: dialer-db
+    plan: free # Note: free plans may spin down due to inactivity.
+    postgres:
+      version: 15
+
+  # 2. Redis Cache
+  # A managed Redis instance for caching and queues.
+  - type: redis
+    name: dialer-redis
+    plan: free
+
+  # 3. Backend API (NestJS)
+  # This service builds and runs the backend API from its Dockerfile.
+  - type: web
+    name: api
+    plan: free
+    env: docker
+    dockerfilePath: ./Dockerfile.api
+    healthCheckPath: /
+    envVars:
+      - key: DATABASE_URL
+        fromService:
+          type: pserv
+          name: dialer-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: dialer-redis
+          property: connectionString
+      # --- Secrets ---
+      # These must be set manually in the Render Dashboard under your service's "Environment" tab.
+      # For JWT_SECRET, you can have Render generate a secure value for you.
+      - key: JWT_SECRET
+        generateValue: true
+      - key: TWILIO_ACCOUNT_SID
+        value: "YOUR_TWILIO_SID" # Replace in Render UI
+      - key: TWILIO_AUTH_TOKEN
+        value: "YOUR_TWILIO_TOKEN" # Replace in Render UI
+      - key: TWILIO_PHONE_NUMBER
+        value: "YOUR_TWILIO_NUMBER" # Replace in Render UI
+      - key: OPENAI_API_KEY
+        value: "YOUR_OPENAI_KEY" # Replace in Render UI
+
+  # 4. Frontend Web App (React + Vite)
+  # A static site that builds the React frontend and serves it globally.
+  - type: static
+    name: web
+    plan: free
+    # This assumes the repo root is the monorepo root.
+    buildCommand: "npm install && npm run build --workspace=apps/web"
+    publishDir: ./apps/web/dist
+    # Routing rules to handle client-side routing and API proxying.
+    routes:
+      # Proxy /api requests to the backend service.
+      - type: rewrite
+        source: /api/:path*
+        destination: https://api.onrender.com/:path*
+      # Rewrite all other requests to index.html for React Router.
+      - type: rewrite
+        source: /*
+        destination: /index.html 

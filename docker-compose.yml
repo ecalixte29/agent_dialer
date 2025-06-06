@@ -1,0 +1,46 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: dialer
+      POSTGRES_PASSWORD: dialer
+      POSTGRES_DB: dialer
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    env_file: .env
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./apps/api:/usr/src/app
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    env_file: .env
+    depends_on:
+      - api
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./apps/web:/usr/src/app
+
+volumes:
+  pgdata: 
