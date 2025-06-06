@@ -50,13 +50,14 @@ services:
         value: "YOUR_OPENAI_KEY" # Replace in Render UI
 
   # 4. Frontend Web App (React + Vite)
-  # A static site that builds the React frontend and serves it globally.
-  - type: static
+  # A web service that builds the React frontend and serves it via a static server.
+  - type: web
     name: web
     plan: free
     # This assumes the repo root is the monorepo root.
     buildCommand: "npm install && npm run build --workspace=apps/web"
-    publishDir: ./apps/web/dist
+    # A simple static server to serve the built files.
+    startCommand: "npm install -g serve && serve -s ./apps/web/dist -l 3000"
     # Routing rules to handle client-side routing and API proxying.
     routes:
       # Proxy /api requests to the backend service.
